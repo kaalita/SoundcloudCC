@@ -10,10 +10,14 @@
 #import <QuartzCore/QuartzCore.h>
 #import "SCUI.h"
 #import "TrackCell.h"
+#import "DateTimeUtils.h"
 
 @interface MainViewController ()
+{
+    NSDate *lastUpdate;
+    UIActivityIndicatorView *loadMoreSpinner;
+}
 
-@property (strong, nonatomic) UITableView *tableView;
 @property (strong, nonatomic) NSArray *tracks;
 @property (strong, nonatomic) UIButton *loginLogoutButton;
 
@@ -23,9 +27,11 @@
 
 @implementation MainViewController
 
-@synthesize tableView = _tableView;
 @synthesize tracks = _tracks;
 @synthesize loginLogoutButton = _loginLogoutButton;
+
+static int maxTracksPerPage = 50;
+
 
 - (void)dealloc
 {
@@ -48,59 +54,34 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
+    [self.navigationController.navigationBar setBarStyle:UIBarStyleBlackOpaque];
+    self.title = @"Favorite tracks";
     
-    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0,
-                                                               42,
-                                                               [UIScreen mainScreen].bounds.size.width,
-                                                               self.view.bounds.size.height - 42*2)];
+    [self.navigationController setToolbarHidden:NO];
+    [self.navigationController.toolbar setBarStyle: UIBarStyleBlackOpaque];
+    
+    _loginLogoutButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.navigationController.toolbar addSubview:_loginLogoutButton];
+    
     self.tableView.backgroundColor = [UIColor colorWithRed:0.22f green:0.22f blue:0.22f alpha:1.00f];
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.rowHeight = [TrackCell cellHeight];
-    [self.view addSubview:_tableView];
     
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0,
-                                                                  0,
-                                                                  self.view.bounds.size.width,
-                                                                  42)];
-    headerView.backgroundColor = [UIColor colorWithRed:0.14f green:0.14f blue:0.14f alpha:1.00f];
-    
-    headerView.layer.shadowPath = [UIBezierPath bezierPathWithRect:headerView.bounds].CGPath;
-    headerView.layer.shadowColor = [UIColor colorWithRed:0.80f green:0.80f blue:0.80f alpha:1.00f].CGColor;
-    headerView.layer.shadowOffset = CGSizeMake(0,1);
-    headerView.layer.shadowOpacity = 0.8;
-    headerView.layer.shadowRadius = 1;
-    [self.view addSubview:headerView];
-    
-    UILabel *headline = [[UILabel alloc] initWithFrame:CGRectMake(6,
-                                                                  6,
-                                                                  headerView.bounds.size.width - 12,
-                                                                  headerView.bounds.size.height - 12)];
-    headline.text = @"Favorite tracks";
-    headline.font = [UIFont boldSystemFontOfSize:16];
-    headline.textAlignment = UITextAlignmentCenter;
-    headline.backgroundColor = headerView.backgroundColor;
-    headline.textColor = [UIColor colorWithRed:0.94f green:0.94f blue:0.94f alpha:1.00f];
-    [headerView addSubview:headline];
-    
-    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0,
-                                                                  self.view.bounds.size.height - 42,
-                                                                  self.view.bounds.size.width,
-                                                                  42)];
-    footerView.backgroundColor = [UIColor colorWithRed:0.14f green:0.14f blue:0.14f alpha:1.00f];
-    footerView.layer.borderColor = [UIColor colorWithRed:0.00f green:0.00f blue:0.00f alpha:1.00f].CGColor;
-    footerView.layer.borderWidth = 1;
-    footerView.layer.shadowPath = [UIBezierPath bezierPathWithRect:headerView.bounds].CGPath;
-    footerView.layer.shadowColor = [UIColor colorWithRed:0.22f green:0.22f blue:0.22f alpha:1.00f].CGColor;
-    footerView.layer.shadowOffset = CGSizeMake(0, -3);
-    footerView.layer.shadowOpacity = 0.8;
-    footerView.layer.shadowRadius = 1;
-    headerView.clipsToBounds = NO;
-    [self.view addSubview:footerView];
-    
-    _loginLogoutButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [footerView addSubview:_loginLogoutButton];
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0,
+                                                                              0,
+                                                                              self.tableView.frame.size.width,
+                                                                              40)];
+    self.tableView.tableFooterView.backgroundColor = self.tableView.backgroundColor;
+
+    loadMoreSpinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    loadMoreSpinner.frame = CGRectMake((self.tableView.tableFooterView.frame.size.width - 40.0)/2,
+                               0,
+                               40.0,
+                               40.0);
+    [self.tableView.tableFooterView addSubview:loadMoreSpinner];
     
     [self updateViewToLoginStatus];
 }
@@ -132,15 +113,55 @@
         
         if (!jsonError && [jsonResponse isKindOfClass:[NSArray class]]) {
             self.tracks = (NSArray *)jsonResponse;
+            lastUpdate = [NSDate date];
             [self.tableView reloadData];
         }
     };
     
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+                            [NSString stringWithFormat: @"%i",maxTracksPerPage], @"limit",
+                            nil];
+    
     NSString *resourceURL = @"https://api.soundcloud.com/me/favorites.json";
     [SCRequest performMethod:SCRequestMethodGET
                   onResource:[NSURL URLWithString:resourceURL]
-             usingParameters:nil
+             usingParameters:params
                  withAccount:account
+      sendingProgressHandler:nil
+             responseHandler:handler];
+}
+
+- (void) loadMore
+{
+    [loadMoreSpinner startAnimating];
+    
+    SCRequestResponseHandler handler;
+    handler = ^(NSURLResponse *response, NSData *data, NSError *error) {
+        NSError *jsonError = nil;
+        NSJSONSerialization *jsonResponse = [NSJSONSerialization
+                                             JSONObjectWithData:data
+                                             options:0
+                                             error:&jsonError];
+        
+        if (!jsonError && [jsonResponse isKindOfClass:[NSArray class]]) {
+            NSMutableArray *newArray = [NSMutableArray arrayWithArray:self.tracks];
+            [newArray addObjectsFromArray:(NSArray *)jsonResponse];
+            self.tracks = newArray;
+            [loadMoreSpinner stopAnimating];
+            [self.tableView reloadData];
+        }
+    };
+    
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+                            [NSString stringWithFormat:@"%i",maxTracksPerPage], @"limit",
+                            [NSString stringWithFormat:@"%i",[self.tracks count]], @"offset",
+                            nil];
+    
+    NSString *resourceURL = @"https://api.soundcloud.com/me/favorites.json";
+    [SCRequest performMethod:SCRequestMethodGET
+                  onResource:[NSURL URLWithString:resourceURL]
+             usingParameters:params
+                 withAccount:[SCSoundCloud account]
       sendingProgressHandler:nil
              responseHandler:handler];
 }
@@ -155,7 +176,6 @@
     SCAccount *account = [SCSoundCloud account];
     if (account)
     {
-        
         UIImage *img = [UIImage imageNamed:@"btn-disconnect-l.png"];
         [_loginLogoutButton setImage: img
                             forState: UIControlStateNormal];
@@ -308,6 +328,17 @@
             TrackCell *cell = (TrackCell*)[self.tableView cellForRowAtIndexPath:indexPath];
             [cell displayImage:[dict valueForKey:@"image"]];
         }
+    }
+}
+
+#pragma mark - UIScrollViewDelegate
+
+-(void)scrollViewDidEndDragging:(UIScrollView *)myscrollView willDecelerate:(BOOL)decelerate
+{
+    if (myscrollView.contentOffset.y > self.tableView.frame.size.height - self.tableView.tableFooterView.frame.size.height)
+    {
+        //start loading more tracks
+        [self loadMore];
     }
 }
 
