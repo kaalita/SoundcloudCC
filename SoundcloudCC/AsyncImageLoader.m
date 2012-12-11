@@ -75,7 +75,7 @@ static AsyncImageLoader *sharedSingleton;
 
 - (void)imageDone:(ASIHTTPRequest*)request
 {
-    UIImage* image = [[UIImage alloc] initWithData:[request responseData]];
+    UIImage *image = [UIImage imageWithData:[request responseData]];
 	if (!image) {
 		return;
 	}
