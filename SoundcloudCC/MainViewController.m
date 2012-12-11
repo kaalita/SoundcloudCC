@@ -21,6 +21,10 @@
 
 @implementation MainViewController
 
+@synthesize tableView = _tableView;
+@synthesize tracks = _tracks;
+@synthesize loginLogoutButton = _loginLogoutButton;
+
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];

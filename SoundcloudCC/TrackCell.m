@@ -22,6 +22,11 @@
 
 @implementation TrackCell
 
+@synthesize track = _track;
+@synthesize dateLabel = _dateLabel;
+@synthesize trackLabel = _trackLabel;
+@synthesize waveImageView = _waveImageView;
+
 static const float WAVE_IMAGE_WIDTH = 1800;
 static const float WAVE_IMAGE_HEIGHT = 280;
 static const float DATE_Y_OFFSET = 6;

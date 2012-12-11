@@ -12,6 +12,8 @@
 
 @implementation AppDelegate
 
+@synthesize window = _window;
+
 + (void)initialize;
 {
     [SCSoundCloud  setClientID:@"eaddf34665c54132458d32e63ea97e1a"

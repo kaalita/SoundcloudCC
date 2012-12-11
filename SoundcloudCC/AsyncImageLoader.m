@@ -39,6 +39,7 @@ static AsyncImageLoader *sharedSingleton;
 
 + (void)initialize
 {
+    NSLog(@"init");
     static BOOL initialized = NO;
     if(!initialized) {
         initialized = YES;
