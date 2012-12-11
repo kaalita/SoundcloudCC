@@ -17,6 +17,8 @@
 @property (strong, nonatomic) NSArray *tracks;
 @property (strong, nonatomic) UIButton *loginLogoutButton;
 
+- (void) updateViewToLoginStatus;
+
 @end
 
 @implementation MainViewController
