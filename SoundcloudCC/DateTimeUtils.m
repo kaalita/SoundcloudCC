@@ -11,15 +11,6 @@
 
 static NSString* dateFormat = @"yyyy/MM/dd' 'HH:mm:ss' 'ZZZ";
 
-+ (NSString*) stringFromDate:(NSDate*) date
-{
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateStyle: NSDateFormatterMediumStyle];
-    [dateFormatter setTimeStyle: NSDateFormatterMediumStyle];
-    NSString *myDateString = [dateFormatter stringFromDate:date];
-    return myDateString;
-}
-
 + (NSString *) dateDiffStringPast:(NSDate*) date
 {
     double timeInterval = [date timeIntervalSinceDate: [NSDate date]];

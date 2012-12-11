@@ -36,6 +36,7 @@
 {
     if(self = [super init])
     {
+        // Register the controller for the notifications from the AsyncImageLoader
         [[NSNotificationCenter defaultCenter] addObserver: self
                                                  selector: @selector(handleImageLoadedNotification:)
                                                      name: @"ImageDownloadFinished"
@@ -104,6 +105,10 @@
     [self updateViewToLoginStatus];
 }
 
+/**
+ * Loads favorite tracks of the user from the Soundcloud server
+ * Refreshes tableview when finished
+ */
 - (void) loadTracks
 {
     SCAccount *account = [SCSoundCloud account];
@@ -140,6 +145,11 @@
              responseHandler:handler];
 }
 
+/**
+ * Updates the view according to the current login status of the user:
+ * if logged in: show logout button and start track download
+ * if logged out: show login button and clear tableview
+ */
 - (void) updateViewToLoginStatus
 {
     SCAccount *account = [SCSoundCloud account];
@@ -186,12 +196,18 @@
     [_loginLogoutButton setNeedsDisplay];
 }
 
+/**
+ * Logout from Soundcloud
+ */
 - (void) logout
 {
     [SCSoundCloud removeAccess];
     [self updateViewToLoginStatus];
 }
 
+/**
+ * Login to Soundcloud
+ */
 - (void) login
 {
     SCLoginViewControllerCompletionHandler handler = ^(NSError *error) {
@@ -274,6 +290,10 @@
     }
 }
 
+/**
+ * Handle the notification from the AsyncImageLoader
+ * iterates through all visible cells and udaptes cell image when the url of the image matches the one of the cell image
+ */
 - (void) handleImageLoadedNotification:(NSNotification *)notification
 {
     NSDictionary *dict = [notification userInfo];

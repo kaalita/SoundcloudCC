@@ -17,6 +17,7 @@
 @property (nonatomic, strong) UILabel *dateLabel;
 @property (nonatomic, strong) UILabel *trackLabel;
 @property (nonatomic, strong) UIImageView *waveImageView;
+@property (nonatomic, strong) UIView *trackView;
 
 @end
 
@@ -26,6 +27,7 @@
 @synthesize dateLabel = _dateLabel;
 @synthesize trackLabel = _trackLabel;
 @synthesize waveImageView = _waveImageView;
+@synthesize trackView = _trackView;
 
 static const float WAVE_IMAGE_WIDTH = 1800;
 static const float WAVE_IMAGE_HEIGHT = 280;
@@ -48,7 +50,7 @@ static const float WAVE_Y_OFFSET = 6;
                                 self.frame.size.height);
         
         self.contentView.backgroundColor = [UIColor colorWithRed:0.22f green:0.22f blue:0.22f alpha:1.00f];
-        self.selectionStyle = UITableViewCellSelectionStyleGray;
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
         
         // Create label for the creation date of the track
         _dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(18,
@@ -63,49 +65,49 @@ static const float WAVE_Y_OFFSET = 6;
         [self.contentView addSubview:_dateLabel];
         
         // Create view as the background for the track
-        UIView *trackView = [[UIView alloc] initWithFrame:CGRectMake(6,
-                                                                     _dateLabel.frame.origin.y
-                                                                     + _dateLabel.frame.size.height,
-                                                                     self.bounds.size.width - 6*2,
-                                                                     [TrackCell cellHeight]
-                                                                     - DATE_Y_OFFSET
-                                                                     - DATE_HEIGHT)];
-        trackView.backgroundColor = [UIColor colorWithRed:0.94f green:0.94f blue:0.94f alpha:1.00f];
-        trackView.layer.cornerRadius = 3;
-        trackView.layer.borderColor = [UIColor colorWithRed:0.14f green:0.14f blue:0.14f alpha:1.00f].CGColor;
-        trackView.layer.borderWidth = 0.5;
-        trackView.layer.shadowPath = [UIBezierPath bezierPathWithRect:trackView.bounds].CGPath;
-        trackView.layer.shadowColor = [UIColor colorWithRed:0.80f green:0.80f blue:0.80f alpha:1.00f].CGColor;
-        trackView.layer.shadowOffset = CGSizeMake(0, 1);
-        trackView.layer.shadowOpacity = 1;
-        trackView.layer.shadowRadius = 1;
-        [self.contentView addSubview:trackView];
+        _trackView = [[UIView alloc] initWithFrame:CGRectMake(6,
+                                                              _dateLabel.frame.origin.y
+                                                              + _dateLabel.frame.size.height,
+                                                              self.bounds.size.width - 6*2,
+                                                              [TrackCell cellHeight]
+                                                              - DATE_Y_OFFSET
+                                                              - DATE_HEIGHT)];
+        _trackView.backgroundColor = [UIColor colorWithRed:0.94f green:0.94f blue:0.94f alpha:1.00f];
+        _trackView.layer.cornerRadius = 3;
+        _trackView.layer.borderColor = [UIColor colorWithRed:0.14f green:0.14f blue:0.14f alpha:1.00f].CGColor;
+        _trackView.layer.borderWidth = 0.5;
+        _trackView.layer.shadowPath = [UIBezierPath bezierPathWithRect:_trackView.bounds].CGPath;
+        _trackView.layer.shadowColor = [UIColor colorWithRed:0.80f green:0.80f blue:0.80f alpha:1.00f].CGColor;
+        _trackView.layer.shadowOffset = CGSizeMake(0, 1);
+        _trackView.layer.shadowOpacity = 1;
+        _trackView.layer.shadowRadius = 1;
+        [self.contentView addSubview:_trackView];
         
         // Create label for track title
         _trackLabel = [[UILabel alloc] initWithFrame:CGRectMake(6,
                                                                 0,
-                                                                trackView.bounds.size.width - 6*2,
+                                                                _trackView.bounds.size.width - 6*2,
                                                                 TITLE_HEIGHT)];
-        _trackLabel.backgroundColor = trackView.backgroundColor;
+        _trackLabel.backgroundColor = _trackView.backgroundColor;
         _trackLabel.textColor = [UIColor colorWithRed:0.14f green:0.14f blue:0.14f alpha:1.00f];
         _trackLabel.highlightedTextColor = [UIColor colorWithRed:1.0 green:1.0 blue:0.9 alpha:1.0];
         _trackLabel.font = [UIFont boldSystemFontOfSize:14];
         _trackLabel.adjustsFontSizeToFitWidth = YES;
         _trackLabel.minimumFontSize = 12;
-        [trackView addSubview:_trackLabel];
+        [_trackView addSubview:_trackLabel];
         
         // Create image view for wave image
         
-        float scaleDownFactor = 1800 / (trackView.bounds.size.width - 12);
+        float scaleDownFactor = 1800 / (_trackView.bounds.size.width - 12);
         
-        _waveImageView = [[UIImageView alloc] initWithFrame:CGRectMake((trackView.bounds.size.width
+        _waveImageView = [[UIImageView alloc] initWithFrame:CGRectMake((_trackView.bounds.size.width
                                                                         - 1800/scaleDownFactor)/2,
                                                                        _trackLabel.frame.origin.y
                                                                        + _trackLabel.frame.size.height
                                                                        + WAVE_Y_OFFSET,
                                                                        WAVE_IMAGE_WIDTH / scaleDownFactor,
                                                                        WAVE_IMAGE_HEIGHT / scaleDownFactor)];
-        [trackView addSubview:_waveImageView];
+        [_trackView addSubview:_waveImageView];
         
         self.track = nil;
         
@@ -153,13 +155,9 @@ static const float WAVE_Y_OFFSET = 6;
     [_waveImageView setNeedsDisplay];
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
-    [super setSelected:selected animated:animated];
-    
-    // Configure the view for the selected state
-}
-
+/**
+ * @return  the denominator to scale down the wave image to fit the device screen size
+ */
 + (float) scaleDownFactor
 {
     return WAVE_IMAGE_WIDTH / ([UIScreen mainScreen].bounds.size.width - 12);
