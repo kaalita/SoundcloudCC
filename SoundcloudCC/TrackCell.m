@@ -9,7 +9,7 @@
 #import "TrackCell.h"
 #import <QuartzCore/QuartzCore.h>
 #import "DateTimeUtils.h"
-#import "ImageManager.h"
+#import "AsyncImageLoader.h"
 
 @interface TrackCell ()
 
@@ -52,7 +52,7 @@ static const float WAVE_Y_OFFSET = 6;
                                                                DATE_HEIGHT)];
         
         _dateLabel.backgroundColor = self.contentView.backgroundColor;
-        _dateLabel.textAlignment = UITextAlignmentRight;
+        _dateLabel.textAlignment = NSTextAlignmentRight;
         _dateLabel.textColor = [UIColor colorWithRed:0.94f green:0.94f blue:0.94f alpha:1.00f];
         _dateLabel.font = [UIFont boldSystemFontOfSize:12];
         [self.contentView addSubview:_dateLabel];
@@ -86,7 +86,7 @@ static const float WAVE_Y_OFFSET = 6;
         _trackLabel.highlightedTextColor = [UIColor colorWithRed:1.0 green:1.0 blue:0.9 alpha:1.0];
         _trackLabel.font = [UIFont boldSystemFontOfSize:14];
         _trackLabel.adjustsFontSizeToFitWidth = YES;
-        _trackLabel.minimumFontSize = 12;
+        _trackLabel.minimumScaleFactor = 0.8;
         [trackView addSubview:_trackLabel];
         
         // Create image view for wave image
@@ -118,7 +118,7 @@ static const float WAVE_Y_OFFSET = 6;
         _trackLabel.text = [_track objectForKey:@"title"];
         
         NSURL *imageURL = [NSURL URLWithString: [_track objectForKey:@"waveform_url"]];
-        UIImage *image = [ImageManager loadImage:imageURL];
+        UIImage *image = [AsyncImageLoader loadImage:imageURL];
         if(image)
         {
             [self displayImage:image];

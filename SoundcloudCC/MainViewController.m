@@ -153,7 +153,6 @@
                      forControlEvents: UIControlEventTouchUpInside];
         
         [self loadTracks];
-        
     }
     else
     {
