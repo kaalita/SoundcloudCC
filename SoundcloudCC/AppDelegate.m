@@ -7,15 +7,27 @@
 //
 
 #import "AppDelegate.h"
+#import "MainViewController.h"
+#import "SCUI.h"
 
 @implementation AppDelegate
+
++ (void)initialize;
+{
+    [SCSoundCloud  setClientID:@"eaddf34665c54132458d32e63ea97e1a"
+                        secret:@"670df1a35e8a40e21d0de178e31bacf8"
+                   redirectURL:[NSURL URLWithString:@"sc-challenge://oauth"]];
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
+    
+    MainViewController *mainVC = [[MainViewController alloc] init];
+    self.window.rootViewController = mainVC;
     [self.window makeKeyAndVisible];
+    
     return YES;
 }
 
@@ -27,7 +39,7 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
+    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }
 
