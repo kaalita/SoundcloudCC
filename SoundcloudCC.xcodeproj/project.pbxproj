@@ -45,8 +45,8 @@
 		54111D7A1676AF3500973E19 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54111D791676AF3500973E19 /* SystemConfiguration.framework */; };
 		54111D7C1676AF4100973E19 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54111D7B1676AF4100973E19 /* MobileCoreServices.framework */; };
 		54111D7E1676AFD100973E19 /* libz.1.1.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 54111D7D1676AFD100973E19 /* libz.1.1.3.dylib */; };
-		54111D811676B0FB00973E19 /* btn-connect-l.png in Resources */ = {isa = PBXBuildFile; fileRef = 54111D7F1676B0FB00973E19 /* btn-connect-l.png */; };
-		54111D821676B0FB00973E19 /* btn-disconnect-l.png in Resources */ = {isa = PBXBuildFile; fileRef = 54111D801676B0FB00973E19 /* btn-disconnect-l.png */; };
+		542071241676B91900308DA6 /* btn-connect-l.png in Resources */ = {isa = PBXBuildFile; fileRef = 542071221676B91900308DA6 /* btn-connect-l.png */; };
+		542071251676B91900308DA6 /* btn-disconnect-l.png in Resources */ = {isa = PBXBuildFile; fileRef = 542071231676B91900308DA6 /* btn-disconnect-l.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -175,8 +175,8 @@
 		54111D791676AF3500973E19 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		54111D7B1676AF4100973E19 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		54111D7D1676AFD100973E19 /* libz.1.1.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.1.3.dylib; path = usr/lib/libz.1.1.3.dylib; sourceTree = SDKROOT; };
-		54111D7F1676B0FB00973E19 /* btn-connect-l.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn-connect-l.png"; sourceTree = "<group>"; };
-		54111D801676B0FB00973E19 /* btn-disconnect-l.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn-disconnect-l.png"; sourceTree = "<group>"; };
+		542071221676B91900308DA6 /* btn-connect-l.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn-connect-l.png"; sourceTree = "<group>"; };
+		542071231676B91900308DA6 /* btn-disconnect-l.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn-disconnect-l.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -272,8 +272,8 @@
 		54111C9B1676A52500973E19 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				54111D7F1676B0FB00973E19 /* btn-connect-l.png */,
-				54111D801676B0FB00973E19 /* btn-disconnect-l.png */,
+				542071221676B91900308DA6 /* btn-connect-l.png */,
+				542071231676B91900308DA6 /* btn-disconnect-l.png */,
 				54111D081676A7D100973E19 /* SoundCloud.bundle */,
 				54111C9C1676A52500973E19 /* SoundcloudCC-Info.plist */,
 				54111C9D1676A52500973E19 /* InfoPlist.strings */,
@@ -511,8 +511,8 @@
 				54111CA91676A52500973E19 /* Default@2x.png in Resources */,
 				54111CAB1676A52500973E19 /* Default-568h@2x.png in Resources */,
 				54111D091676A7D100973E19 /* SoundCloud.bundle in Resources */,
-				54111D811676B0FB00973E19 /* btn-connect-l.png in Resources */,
-				54111D821676B0FB00973E19 /* btn-disconnect-l.png in Resources */,
+				542071241676B91900308DA6 /* btn-connect-l.png in Resources */,
+				542071251676B91900308DA6 /* btn-disconnect-l.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

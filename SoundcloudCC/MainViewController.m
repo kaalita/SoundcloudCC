@@ -140,7 +140,7 @@
     if (account)
     {
         
-        UIImage *img = [UIImage imageNamed:@"soundcloud_disconnect.png"];
+        UIImage *img = [UIImage imageNamed:@"btn-disconnect-l.png"];
         [_loginLogoutButton setImage: img
                             forState: UIControlStateNormal];
         
